@@ -1,31 +1,25 @@
-
 <template>
-  <div class="fixed z-50 left-0 right-0 lg:left-10 lg:right-10">
+  <div class="fixed z-50 left-0 right-0">
     <nav
-      class="
-        container
-        z-10
-        px-6
-        py-8
-        mx-auto
-        lg:flex lg:justify-between lg:items-center
-        border-b-2 border-gray-300
-      "
+      :class="(isTransparent) ? 
+        'z-10 py-1 lg:flex lg:justify-between lg:items-center border-gray-300 bg-gray-300  bg-transparent' : 
+        'z-10 py-1 lg:flex lg:justify-between lg:items-center border-gray-300 bg-gray-300'"
     >
       <div class="flex items-center justify-between">
         <router-link
           to="/"
           class="
+            px-8
             text-xl
             font-bold
             text-gray-100
             lg:text-2xl
             hover:text-indigo-400
-            transform hover:translate-y-1 hover:scale-90
+            transform hover:scale-110
           "
           >
           <a href="/">
-            <img :src = "imgsrc" class="w-64 lg:w-80 hover: cursor-pointer"  alt="LOGO">
+            <img :src = "imgsrc" class="w-64 lg:w-80 hover:cursor-pointer"  alt="LOGO">
           </a>
         </router-link>
         <!-- Mobile menu button -->
@@ -35,7 +29,7 @@
             class="
               text-gray-500
               hover:text-gray-800
-              focus:outline-none focus:text-gray-400
+              focus:outline-none focus:text-gray-400 
             "
           >
             <svg viewBox="0 0 24 24" class="w-6 h-6 fill-current">
@@ -54,6 +48,7 @@
         class="
           flex-col
           mt-8
+          px-8
           space-y-4
           border-gray-200
           lg:flex lg:space-y-0 lg:flex-row lg:items-center lg:space-x-10 lg:mt-0
@@ -75,25 +70,46 @@
 import { ref } from 'vue';
 export default {
   data() {
+    let isTransparent = ref(true);
+    let showMenu = ref(false);
     return {
-        imgsrc : require("../assets/barlogo2.webp"),
+        isTransparent,
+        showMenu,
+        imgsrc : require("../assets/barlogo.webp"),
     }
   },
   setup() {
-    let showMenu = ref(false);
-    const toggleNav = () => (showMenu.value = !showMenu.value);
-    return { showMenu, toggleNav };
   },
   mounted() {
     window.addEventListener('scroll', () => {
         let scrollTop = document.documentElement.scrollTop ;
-        if ( scrollTop >= window.screen.height-180 ) {
+        if ( scrollTop >= 10 ) {
+          this.isTransparent = false; 
           this.imgsrc = require("../assets/barlogo.webp");
         }
         else {
+          this.isTransparent = true;
           this.imgsrc = require("../assets/barlogo2.webp");
         }
     }, true);
   },
+  methods: {
+    toggleNav() {
+      this.showMenu = !this.showMenu;
+      let scrollTop = document.documentElement.scrollTop ;
+      if(scrollTop <= 10) {
+        this.isTransparent = !this.isTransparent;
+      }
+    }
+  }
 };
 </script>
+
+<style>
+.bg-transparent {
+  background-color: transparent !important;
+}
+nav {
+  transition: background-color 0.5s ease, opacity 0.5s ease;
+}
+</style>
